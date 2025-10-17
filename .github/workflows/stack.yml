@@ -7,7 +7,7 @@ on:
       - main
 
 permissions:
-  id-token: write     # Needed for AWS OIDC auth
+  id-token: write    # Needed for AWS OIDC auth
   contents: read
 
 jobs:
@@ -28,10 +28,7 @@ jobs:
         with:
           client-id: ${{ secrets.AZURE_CLIENT_ID }}
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          # FIX: Changed 'client-secret' to 'service-principal-password' 
-          # and explicitly provided 'subscription-id'.
-          service-principal-password: ${{ secrets.AZURE_CLIENT_SECRET }} 
-          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
+          client-secret: ${{ secrets.AZURE_CLIENT_SECRET }}
 
       # Fetch MDC CloudFormation StackSet template URL
       - name: Fetch MDC CloudFormation Template URL
