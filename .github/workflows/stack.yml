@@ -36,7 +36,7 @@ jobs:
         id: fetch_template
         run: |
           TEMPLATE_URL=$(az rest --method post \
-            --url "https://management.azure.com/subscriptions/${AZURE_SUBSCRIPTION_ID}/providers/Microsoft.Security/defenderForCloudAwsOffering/organizationCloudFormationTemplate?api-version=2023-10-01-preview" \
+            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/providers/Microsoft.Security/defenderForCloudAwsOffering/organizationCloudFormationTemplate?api-version=2023-10-01-preview" \
             --query 'templateUrl' -o tsv)
           echo "template_url=$TEMPLATE_URL" >> $GITHUB_OUTPUT
 
@@ -44,7 +44,7 @@ jobs:
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
         with:
-          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          role-to-assume: arn:aws:iam::746669220365:role/oidc-terraform-role
           aws-region: ${{ env.AWS_REGION }}
 
       # Setup Terraform
@@ -65,16 +65,16 @@ jobs:
       - name: Create MDC Connector (Azure)
         run: |
           az rest --method put \
-            --url "https://management.azure.com/subscriptions/${AZURE_SUBSCRIPTION_ID}/resourceGroups/<your-rg>/providers/Microsoft.Security/multiCloudConnectors/awsOrgConnector?api-version=2023-10-01-preview" \
+            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/resourceGroups/<your-rg>/providers/Microsoft.Security/multiCloudConnectors/awsOrgConnector?api-version=2023-10-01-preview" \
             --body '{
               "location": "centralus",
               "properties": {
                 "cloudName": "AWS",
                 "environmentType": "awsOrganization",
-                "hierarchyIdentifier": "<your_aws_organization_id>",
+                "hierarchyIdentifier": "o-z693l41vfh",
                 "authenticationDetails": {
                   "authenticationType": "awsAssumeRole",
-                  "roleArn": "arn:aws:iam::<management_account_id>:role/DefenderForCloud-Connector-Role"
+                  "roleArn": "arn:aws:iam::746669220365:role/DefenderForCloud-Connector-Role"
                 }
               }
             }'
