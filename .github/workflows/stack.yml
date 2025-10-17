@@ -65,7 +65,7 @@ jobs:
       - name: Create MDC Connector (Azure)
         run: |
           az rest --method put \
-            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/resourceGroups/<your-rg>/providers/Microsoft.Security/multiCloudConnectors/awsOrgConnector?api-version=2023-10-01-preview" \
+            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/resourceGroups/kpmg-testing/providers/Microsoft.Security/multiCloudConnectors/awsOrgConnector?api-version=2023-10-01-preview" \
             --body '{
               "location": "centralus",
               "properties": {
