@@ -7,7 +7,7 @@ variable "aws_region" {
 variable "template_path" {
   description = "Path to CloudFormation template to deploy"
   type        = string
-  default     = "${path.module}/templates/aws-org-onboarding.yaml"
+  default     = "terraform/templates/aws-org-onboarding.yaml"
 }
 
 variable "aws_management_account_id" {
