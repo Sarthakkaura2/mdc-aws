@@ -1,6 +1,6 @@
 aws_region = "us-east-1"
 aws_management_account_id = "746669220365"
-aws_organization_id = "o-z693l41vfh"
+aws_organization_id = "r-t6wu"
 azure_subscription_id = "c5fddee6-8712-4dd8-b580-637b37dc5472"
 azure_resource_group = "kpmg-testing"
 connector_location = "centralus"
