@@ -40,7 +40,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   # Specify the regions where the stacks should be deployed
   # You must replace "eu-west-1" with a list of regions you want to target,
   # or pass it in as another variable if needed.
-  region = ["eu-west-1", "us-east-1"] 
+  
 }
 
 
