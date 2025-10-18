@@ -13,11 +13,13 @@ variable "template_path" {
 variable "aws_management_account_id" {
   description = "AWS management account id"
   type        = string
+  default     = "746669220365"
 }
 
 variable "aws_organization_id" {
   description = "AWS Organization ID (o-xxxx)"
   type        = string
+  default     = "o-z693l41vfh"
 }
 
 variable "azure_subscription_id" {
