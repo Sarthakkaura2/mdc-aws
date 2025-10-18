@@ -1,0 +1,7 @@
+aws_region = "us-east-1"
+aws_management_account_id = "111111111111"
+aws_organization_id = "o-testorg123"
+azure_subscription_id = "<your-azure-sub-id>"
+azure_resource_group = "kpmg-testing"
+connector_location = "centralus"
+azure_management_role_arn = "arn:aws:iam::111111111111:role/DefenderForCloud-Connector-Role"
