@@ -1,20 +1,29 @@
 locals {
-  stackset_name = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
+  # 1. FIX: Define the full template path using path.module here.
+  # This resolves the "Variables not allowed" error in the variable block.
+  full_template_path = "${path.module}/${var.template_path}"
+  stackset_name      = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
 }
 
 resource "aws_cloudformation_stack_set" "mdc_org" {
   name             = local.stackset_name
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = file(var.template_path)
+  
+  # Use the local value for the template path
+  template_body    = file(local.full_template_path)
 
   auto_deployment {
-    enabled                         = true
+    enabled                          = true
     retain_stacks_on_account_removal = false
   }
 
+  # 2. FIX: Corrected structure for deployment_targets block with SERVICE_MANAGED.
+  # It takes attributes like organizational_unit_ids directly.
+  # Assumes var.aws_organization_id is the AWS Organization Root ID (o-xxxx) 
+  # or the desired Organizational Unit ID (ou-xxxx).
   deployment_targets {
-    organizational_unit_ids = []
+    organizational_unit_ids = [var.aws_organization_id]
   }
 
   operation_preferences {
