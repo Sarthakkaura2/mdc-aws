@@ -30,6 +30,7 @@ jobs:
           client-id: "89c087b6-1a3d-4153-b9c5-cc0e20af8d30"
           tenant-id: "831de134-d871-4cd7-823a-eacb69c699c8"
           client-secret: "kaA8Q~w5cPFB82eZxcF9srMSeVnOF0ZWoSQIwa4M"
+          allow-no-subscriptions: true
 
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
