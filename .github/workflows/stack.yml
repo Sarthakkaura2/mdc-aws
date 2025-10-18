@@ -36,7 +36,7 @@ jobs:
         id: fetch_template
         run: |
           TEMPLATE_URL=$(az rest --method post \
-            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/providers/Microsoft.Security/defenderForCloudAwsOffering/organizationCloudFormationTemplate?api-version=2024-04-01" \
+            --url "https://management.azure.com/subscriptions/c5fddee6-8712-4dd8-b580-637b37dc5472/providers/Microsoft.Security/defenderForCloudAwsOffering/organizationCloudFormationTemplate?api-version=2023-10-01-preview" \
             --query 'templateUrl' -o tsv)
           echo "template_url=$TEMPLATE_URL" >> $GITHUB_OUTPUT
 
