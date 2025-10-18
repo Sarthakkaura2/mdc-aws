@@ -1,49 +1,53 @@
-terraform {
-  required_providers {
-    aws = {
-      source  = "hashicorp/aws"
-      version = "~> 5.0"
-    }
-  }
+locals {
+stackset_name = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
 }
 
-provider "aws" {
-  region = "us-east-1"              # or your mgmt region
-  profile = "aws-management"        # credentials for mgmt account
+
+resource "aws_cloudformation_stack_set" "mdc_org" {
+name = local.stackset_name
+permission_model = "SERVICE_MANAGED"
+capabilities = ["CAPABILITY_NAMED_IAM"]
+
+
+template_body = file(var.template_path)
+
+
+auto_deployment {
+enabled = true
+retain_stacks_on_account_removal = false
 }
 
-variable "template_url" {
-  description = "URL of MDC AWS Organization onboarding CloudFormation template"
-  type        = string
+
+deployment_targets {
+# target the whole org. You can list organisational_unit_ids if desired.
+organizational_unit_ids = []
 }
 
-# --- MDC Organization StackSet ---
-resource "aws_cloudformation_stack_set" "mdc_org_stackset" {
-  name             = "MDC-Org-Onboarding"
-  permission_model = "SERVICE_MANAGED"
-  capabilities     = ["CAPABILITY_NAMED_IAM"]
 
-  template_url = var.template_url
+operation_preferences {
+max_concurrent_count = 5
+}
 
-  auto_deployment {
-    enabled = true
-    retain_stacks_on_account_removal = false
-  }
 
-  deployment_targets {
-    organizational_unit_ids = ["ou-xxxx-yyyyy"] # or omit to target whole org
-  }
+tags = {
+ManagedBy = "Terraform"
+Purpose = "MDC-AWS-Org-Onboarding"
+}
+}
 
-  operation_preferences {
-    max_concurrent_count = 3
-  }
 
-  lifecycle {
-    create_before_destroy = true
-  }
+# Optional: Waiter / null_resource to run Azure REST API to create connector after StackSet is created
+resource "null_resource" "create_azure_connector" {
+provisioner "local-exec" {
+command = <<EOT
+az rest --method put \
+--url "https://management.azure.com/subscriptions/${var.azure_subscription_id}/resourceGroups/${var.azure_resource_group}/providers/Microsoft.Security/multiCloudConnectors/awsOrgConnector?api-version=2023-10-01-preview" \
+--body '{"location":"${var.connector_location}","properties":{"cloudName":"AWS","environmentType":"awsOrganization","hierarchyIdentifier":"${var.aws_organization_id}","authenticationDetails":{"authenticationType":"awsAssumeRole","roleArn":"${var.azure_management_role_arn}"}}}'
+EOT
+}
 
-  tags = {
-    Owner = "Security"
-    Purpose = "MDC Organization Onboarding"
-  }
+
+triggers = {
+stackset_id = aws_cloudformation_stack_set.mdc_org.id
+}
 }
