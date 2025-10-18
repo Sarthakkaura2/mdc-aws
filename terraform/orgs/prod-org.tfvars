@@ -1,0 +1,7 @@
+aws_region = "us-east-1"
+aws_management_account_id = "222222222222"
+aws_organization_id = "o-prodorg999"
+azure_subscription_id = "<your-prod-azure-sub-id>"
+azure_resource_group = "kpmg-prod-rg"
+connector_location = "centralus"
+azure_management_role_arn = "arn:aws:iam::222222222222:role/DefenderForCloud-Connector-Role"
