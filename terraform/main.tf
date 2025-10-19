@@ -9,21 +9,23 @@ resource "aws_cloudformation_stack_set" "mdc_org" {
   name             = "MDC-Org-Onboarding"
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = "terraform/templates/aws-org-onboarding.yaml"
+  template_body    = file("${path.module}/templates/CloudFormation.template")
 
   auto_deployment {
-    enabled = true
+    enabled                         = true
     retain_stacks_on_account_removal = false
   }
-
-
-  administration_role_arn = "arn:aws:iam::<management-account-id>:role/AWSCloudFormationStackSetAdministrationRole"
-  execution_role_name     = "AWSCloudFormationStackSetExecutionRole"
 
   operation_preferences {
     max_concurrent_count = 5
   }
+
+  tags = {
+    ManagedBy = "Terraform"
+    Purpose   = "MDC-AWS-Org-Onboarding"
+  }
 }
+
 
 
 # --- 2. aws_cloudformation_stack_set_instance Resource (The deployment) ---
