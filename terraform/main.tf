@@ -45,7 +45,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   
   # This block correctly specifies the deployment targets for SERVICE_MANAGED
   deployment_targets {
-    organizational_unit_ids = []
+    organizational_unit_ids = [var.aws_organization_id]
   } 
     region         = "eu-west-1"
   }
