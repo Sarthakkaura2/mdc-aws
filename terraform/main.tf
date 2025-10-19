@@ -46,11 +46,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   # This block correctly specifies the deployment targets for SERVICE_MANAGED
   deployment_targets {
     organizational_unit_ids = [var.aws_organization_id]
-  }
-    accounts = ["746669220365"]
-    
-    # 3. Tell the filter to only deploy to the accounts listed in 'accounts'
-    account_filter_type = "DIFFERENCE" 
+  } 
     region         = "eu-west-1"
   }
 
