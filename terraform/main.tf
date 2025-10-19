@@ -3,7 +3,7 @@ locals {
   stackset_name      = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
   
   # Path to your template file
-  full_template_path = "terraform/templates/aws-org-onboarding.template"
+  full_template_path = "templates/aws-org-onboarding.template"
 }
 
 # -----------------------------------------------------------------------------
