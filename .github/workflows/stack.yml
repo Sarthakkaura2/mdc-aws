@@ -19,11 +19,11 @@ jobs:
     env:
       AZURE_SUBSCRIPTION_ID: "c5fddee6-8712-4dd8-b580-637b37dc5472"
       AZURE_RG: "kpmg-testing"
-
+    
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-
+    
       - name: Azure login
         uses: azure/login@v1
         with:
@@ -31,22 +31,32 @@ jobs:
           tenant-id: "831de134-d871-4cd7-823a-eacb69c699c8"
           client-secret: "kaA8Q~w5cPFB82eZxcF9srMSeVnOF0ZWoSQIwa4M"
           allow-no-subscriptions: true
-
+    
       - name: Configure AWS credentials (OIDC)
         uses: aws-actions/configure-aws-credentials@v4
         with:
           role-to-assume: "arn:aws:iam::746669220365:role/oidc-terraform-role"
           aws-region: "eu-west-1"
-
+    
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.6.6
-
+    
+      # --- NEW STEP TO ENSURE CLEANLINESS ---
+      - name: Force Clean Provider Cache
+        working-directory: ./terraform
+        run: |
+          echo "Removing potential old provider binaries and lock file."
+          rm -rf .terraform
+          rm -f .terraform.lock.hcl
+      # -------------------------------------
+    
       - name: Terraform Init
         working-directory: ./terraform
-        run: terraform init -upgrade
-
+        # We keep the -upgrade flag just in case
+        run: terraform init -upgrade 
+    
       - name: Terraform Apply for selected org
         working-directory: ./terraform
         run: terraform apply -auto-approve -var-file="orgs/${{ github.event.inputs.org }}.tfvars"
