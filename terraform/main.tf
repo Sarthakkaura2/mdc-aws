@@ -1,7 +1,7 @@
 locals {
   stackset_name      = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
   # Assuming you fixed the variable.tf, we use the literal path here
-  full_template_path = "templates/aws-org-onboarding.yaml"
+  full_template_path = "terraform/templates/aws-org-onboarding.template"
 }
 
 # --- 1. aws_cloudformation_stack_set Resource (The definition) ---
@@ -9,7 +9,7 @@ resource "aws_cloudformation_stack_set" "mdc_org" {
   name             = "MDC-Org-Onboarding"
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = "templates/aws-org-onboarding.yaml"
+  template_body    = "terraform/templates/aws-org-onboarding.template"
 
   auto_deployment {
     enabled                         = true
