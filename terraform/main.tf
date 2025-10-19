@@ -6,19 +6,17 @@ locals {
 
 # --- 1. aws_cloudformation_stack_set Resource (The definition) ---
 resource "aws_cloudformation_stack_set" "mdc_org" {
-  name             = local.stackset_name
+  name             = "MDC-Org-Onboarding"
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = file(var.template_path)
+  template_body    = file("CloudFormation.template")
 
   auto_deployment {
     enabled = true
     retain_stacks_on_account_removal = false
   }
 
-  deployment_targets {
-    organizational_unit_ids = [] # Replace with your top-level OU
-  }
+  organizational_unit_ids = []  # instead of deployment_targets
 
   administration_role_arn = "arn:aws:iam::<management-account-id>:role/AWSCloudFormationStackSetAdministrationRole"
   execution_role_name     = "AWSCloudFormationStackSetExecutionRole"
