@@ -19,7 +19,7 @@ variable "aws_management_account_id" {
 variable "aws_organization_id" {
   description = "AWS Organization ID (o-xxxx)"
   type        = string
-  default     = "o-z693l41vfh"
+  default     = "r-t6wu"
 }
 
 variable "azure_subscription_id" {
