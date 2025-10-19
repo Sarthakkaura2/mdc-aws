@@ -9,7 +9,7 @@ resource "aws_cloudformation_stack_set" "mdc_org" {
   name             = "MDC-Org-Onboarding"
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = file("CloudFormation.template")
+  template_body    = "terraform/templates/aws-org-onboarding.yaml"
 
   auto_deployment {
     enabled = true
