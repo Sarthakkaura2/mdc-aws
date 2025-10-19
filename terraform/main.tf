@@ -44,6 +44,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   deployment_targets {
     organizational_unit_ids = [var.aws_organization_id]
   }
+    regions = ["eu-west-1", "us-east-1"]
   }
 
 # -----------------------------------------------------------------------------
