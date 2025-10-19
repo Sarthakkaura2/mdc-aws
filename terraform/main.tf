@@ -16,7 +16,6 @@ resource "aws_cloudformation_stack_set" "mdc_org" {
     retain_stacks_on_account_removal = false
   }
 
-  organizational_unit_ids = []  # instead of deployment_targets
 
   administration_role_arn = "arn:aws:iam::<management-account-id>:role/AWSCloudFormationStackSetAdministrationRole"
   execution_role_name     = "AWSCloudFormationStackSetExecutionRole"
