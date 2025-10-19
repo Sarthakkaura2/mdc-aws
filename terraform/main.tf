@@ -45,10 +45,6 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
     organizational_unit_ids = [var.aws_organization_id]
   }
   
-  # You need to define the target regions for deployment
-  # Replace 'eu-west-1' with your actual list of regions, e.g., ["us-east-1", "eu-west-1"]
-  regions = ["eu-west-1"] 
-}
 
 # -----------------------------------------------------------------------------
 # --- 3. Azure Connector Resource (Triggers after deployment) ---
