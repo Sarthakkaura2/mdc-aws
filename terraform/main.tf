@@ -44,7 +44,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   deployment_targets {
     organizational_unit_ids = [var.aws_organization_id]
   }
-  
+  }
 
 # -----------------------------------------------------------------------------
 # --- 3. Azure Connector Resource (Triggers after deployment) ---
