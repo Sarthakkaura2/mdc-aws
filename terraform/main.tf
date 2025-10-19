@@ -9,24 +9,25 @@ resource "aws_cloudformation_stack_set" "mdc_org" {
   name             = local.stackset_name
   permission_model = "SERVICE_MANAGED"
   capabilities     = ["CAPABILITY_NAMED_IAM"]
-  template_body    = file(local.full_template_path)
+  template_body    = file(var.template_path)
 
   auto_deployment {
-    enabled                          = true
+    enabled = true
     retain_stacks_on_account_removal = false
   }
-  
-  # REMOVED: deployment_targets block is not allowed here
+
+  deployment_targets {
+    organizational_unit_ids = [] # Replace with your top-level OU
+  }
+
+  administration_role_arn = "arn:aws:iam::<management-account-id>:role/AWSCloudFormationStackSetAdministrationRole"
+  execution_role_name     = "AWSCloudFormationStackSetExecutionRole"
 
   operation_preferences {
     max_concurrent_count = 5
   }
-
-  tags = {
-    ManagedBy = "Terraform"
-    Purpose   = "MDC-AWS-Org-Onboarding"
-  }
 }
+
 
 # --- 2. aws_cloudformation_stack_set_instance Resource (The deployment) ---
 resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
