@@ -1,3 +1,13 @@
+terraform {
+  required_providers {
+    aws = {
+      source  = "hashicorp/aws"
+      # Set a modern version, such as the latest major version (v5.0 or later)
+      version = "~> 5.0" 
+    }
+  }
+}
+
 locals {
   # StackSet name composed of a prefix and the organization ID
   stackset_name      = "MDC-AWS-Org-Onboarding-${var.aws_organization_id}"
@@ -5,6 +15,7 @@ locals {
   # Path to your template file
   full_template_path = "templates/aws-org-onboarding.template"
 }
+
 
 # -----------------------------------------------------------------------------
 # --- 1. aws_cloudformation_stack_set Resource (The definition) ---
