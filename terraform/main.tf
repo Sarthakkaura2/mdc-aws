@@ -1,11 +1,13 @@
-
-
 locals {
   # StackSet name composed of a prefix and the organization ID
-  stackset_name      = "MDC-AWS-Orgsz3-Onboarding-${var.aws_organization_id}"
+  stackset_name       = "MDC-AWS-Orgsz3-Onboarding-${var.aws_organization_id}"
   
   # Path to your template file
-  full_template_path = "templates/aws-org-onboarding.template"
+  full_template_path  = "templates/aws-org-onboarding.template"
+
+  # The ARN of the StackSet Admin Role created in the Management Account.
+  # This role is assumed by the CloudFormation service to deploy the template.
+  stack_set_admin_role_arn = "arn:aws:iam::${var.aws_management_account_id}:role/aws-service-role/cloudformation.amazonaws.com/AWSServiceRoleForCloudFormation"
 }
 
 
@@ -14,16 +16,15 @@ locals {
 # -----------------------------------------------------------------------------
 resource "aws_cloudformation_stack_set" "mdc_org" {
   # Use the local variable for the name
-  name             = local.stackset_name 
-  permission_model = "SERVICE_MANAGED"
-  capabilities     = ["CAPABILITY_NAMED_IAM"]
+  name              = local.stackset_name 
+  permission_model  = "SERVICE_MANAGED"
+  capabilities      = ["CAPABILITY_NAMED_IAM"]
   
-  # 🎯 FIX: Use the file() function to read the template's content into a string.
-  # This resolves the 'Template format error: unsupported structure'
-  template_body    = file(local.full_template_path)
+  # Reads the content of the CloudFormation template
+  template_body     = file(local.full_template_path)
 
   auto_deployment {
-    enabled                    = true
+    enabled                       = true
     retain_stacks_on_account_removal = false
   }
 
@@ -45,10 +46,11 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
   
   # This block correctly specifies the deployment targets for SERVICE_MANAGED
   deployment_targets {
+    # Targeting the entire organization (root ID) or specific OUs
     organizational_unit_ids = [var.aws_organization_id]
   } 
-    region         = "eu-west-1"
-  }
+    region        = "eu-west-1" # Deploy the monitoring role in eu-west-1 in all accounts
+}
 
 # -----------------------------------------------------------------------------
 # --- 3. Azure Connector Resource (Triggers after deployment) ---
@@ -56,6 +58,7 @@ resource "aws_cloudformation_stack_set_instance" "mdc_org_instance" {
 resource "null_resource" "create_azure_connector" {
   provisioner "local-exec" {
     command = <<EOT
+# Exporting variables for the shell environment
 export AWS_MGMT_ACCOUNT_ID="${var.aws_management_account_id}"
 export AZURE_MGMT_ROLE_ARN="${var.azure_management_role_arn}"
 export AWS_ORG_ID="${var.aws_organization_id}"
@@ -68,15 +71,15 @@ az rest --method put \
       "location": "${var.connector_location}",
       "properties": {
         "cloudName": "AWS",
-        "hierarchyIdentifier": "${AWS_ORG_ID}",
+        "hierarchyIdentifier": "$$AWS_ORG_ID",
         "authenticationDetails": {
           "authenticationType": "awsAssumeRole",
-          "roleArn": "${AZURE_MGMT_ROLE_ARN}"
+          "roleArn": "$$AZURE_MGMT_ROLE_ARN"
         },
         "organizationalData": {
           "organizationMembershipType": "Master",
-          "masterAccountId": "${AWS_MGMT_ACCOUNT_ID}",
-          "stacksetArn": "${STACKSET_ARN}"
+          "masterAccountId": "$$AWS_MGMT_ACCOUNT_ID",
+          "stacksetArn": "$$STACKSET_ARN"
         },
         "offerings": [
           {
