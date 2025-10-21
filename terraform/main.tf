@@ -2,7 +2,7 @@
 
 locals {
   # StackSet name composed of a prefix and the organization ID
-  stackset_name      = "MDC-AWS-Og-Onboarding-${var.aws_organization_id}"
+  stackset_name      = "MDC-AWS-Orgsz-Onboarding-${var.aws_organization_id}"
   
   # Path to your template file
   full_template_path = "templates/aws-org-onboarding.template"
